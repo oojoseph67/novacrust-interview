@@ -35,7 +35,7 @@ export class WalletService {
           userId: user.id,
         },
       });
-      if (!existingWallet) {
+      if (existingWallet) {
         throw new HttpException(
           `user already has a wallet`,
           HttpStatus.BAD_REQUEST,

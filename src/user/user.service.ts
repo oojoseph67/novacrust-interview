@@ -156,7 +156,6 @@ export class UserService {
     try {
       const users = await this.userRepository.find({
         order: { createdAt: 'DESC' },
-        relations: ['role'],
       });
 
       return users;

@@ -9,8 +9,6 @@ export class CreateWalletDto {
   })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ obj }: { obj: { username: string } }) =>
-    obj.username.toLowerCase(),
-  )
+  @Transform(({ value }) => (value ? String(value).toLowerCase() : value))
   username: string;
 }

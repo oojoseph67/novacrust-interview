@@ -9,9 +9,7 @@ export class TransferWalletDto {
   })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ obj }: { obj: { username: string } }) =>
-    obj.username.toLowerCase(),
-  )
+  @Transform(({ value }) => (value ? String(value).toLowerCase() : value))
   senderUsername: string;
 
   @ApiProperty({
@@ -20,9 +18,7 @@ export class TransferWalletDto {
   })
   @IsNotEmpty()
   @IsString()
-  @Transform(({ obj }: { obj: { username: string } }) =>
-    obj.username.toLowerCase(),
-  )
+  @Transform(({ value }) => (value ? String(value).toLowerCase() : value))
   receiverUsername: string;
 
   @ApiProperty({

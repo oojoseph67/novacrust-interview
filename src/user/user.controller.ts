@@ -83,39 +83,6 @@ export class UserController {
     return await this.userService.findAllUsers();
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'get user by id' })
-  @ApiParam({
-    name: 'id',
-    description: 'user id (uuid)',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'user retrieved successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', example: 'uuid' },
-        username: { type: 'string', example: 'johndoe' },
-        email: { type: 'string', example: 'user@example.com' },
-        createdAt: { type: 'string', format: 'date-time' },
-        updatedAt: { type: 'string', format: 'date-time' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'user not found',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'internal server error',
-  })
-  async findUserById(@Param('id') id: string): Promise<User> {
-    return await this.userService.findUserById(id);
-  }
-
   @Get('by-email')
   @ApiOperation({ summary: 'get user by email address' })
   @ApiQuery({
@@ -151,6 +118,39 @@ export class UserController {
   })
   async findUserByEmail(@Query('email') email: string): Promise<User | null> {
     return await this.userService.findUserByEmail(email);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'get user by id' })
+  @ApiParam({
+    name: 'id',
+    description: 'user id (uuid)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'user retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', example: 'uuid' },
+        username: { type: 'string', example: 'johndoe' },
+        email: { type: 'string', example: 'user@example.com' },
+        createdAt: { type: 'string', format: 'date-time' },
+        updatedAt: { type: 'string', format: 'date-time' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'user not found',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'internal server error',
+  })
+  async findUserById(@Param('id') id: string): Promise<User> {
+    return await this.userService.findUserById(id);
   }
 
   @Get('by-username/:username')
