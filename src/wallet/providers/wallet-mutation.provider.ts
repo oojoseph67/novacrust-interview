@@ -21,10 +21,19 @@ export class WalletMutationProvider {
     try {
       const { amount, username } = fundWalletDto;
 
+      // validate amount
+      const fundAmount = parseFloat(amount);
+      if (isNaN(fundAmount) || fundAmount <= 0) {
+        throw new HttpException(
+          'amount must be a positive number',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const user = await this.userService.findUserByUsername(username);
       if (!user) {
         throw new HttpException(
-          `user not found... please create an account`,
+          'user not found. please create an account first',
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -37,14 +46,13 @@ export class WalletMutationProvider {
 
       if (!userWallet) {
         throw new HttpException(
-          `user wallet not found... please create a wallet`,
+          'user wallet not found. please create a wallet first',
           HttpStatus.BAD_REQUEST,
         );
       }
 
       // convert to numbers and ensure proper decimal precision
       const currentBalance = parseFloat(String(userWallet.balance || 0));
-      const fundAmount = parseFloat(amount);
       const newBalance = parseFloat((currentBalance + fundAmount).toFixed(8));
 
       await this.walletRepository.update(userWallet.id, {
@@ -55,19 +63,31 @@ export class WalletMutationProvider {
         where: { userId: userWallet.userId },
       });
 
+      this.logger.log('wallet funded successfully', {
+        username,
+        amount: fundAmount,
+        previousBalance: currentBalance,
+        newBalance,
+      });
+
       return {
-        message: `user balance updated successfully`,
+        message: 'wallet funded successfully',
         wallet: updatedUserWallet,
       };
     } catch (error) {
-      this.logger.error({ error });
+      this.logger.error('error funding wallet', {
+        error: error.message,
+        stack: error.stack,
+        username: fundWalletDto.username,
+        amount: fundWalletDto.amount,
+      });
 
       if (error instanceof HttpException) {
         throw error;
       }
 
       throw new HttpException(
-        `error funding user wallet`,
+        'failed to fund wallet. please try again later',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -77,11 +97,28 @@ export class WalletMutationProvider {
     try {
       const { amount, receiverUsername, senderUsername } = transferWalletDto;
 
+      // validate amount
+      const transferAmount = parseFloat(amount);
+      if (isNaN(transferAmount) || transferAmount <= 0) {
+        throw new HttpException(
+          'amount must be a positive number',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // prevent self-transfer
+      if (senderUsername.toLowerCase() === receiverUsername.toLowerCase()) {
+        throw new HttpException(
+          'cannot transfer funds to yourself',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const senderUser =
         await this.userService.findUserByUsername(senderUsername);
       if (!senderUser) {
         throw new HttpException(
-          `sender ${senderUsername} not found... please create an account`,
+          `sender '${senderUsername}' not found. please create an account first`,
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -90,7 +127,7 @@ export class WalletMutationProvider {
         await this.userService.findUserByUsername(receiverUsername);
       if (!receiverUser) {
         throw new HttpException(
-          `receiver ${receiverUsername} not found... please create an account`,
+          `receiver '${receiverUsername}' not found. please create an account first`,
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -102,7 +139,7 @@ export class WalletMutationProvider {
       });
       if (!senderWallet) {
         throw new HttpException(
-          `sender ${senderUsername} wallet not found... please create a wallet`,
+          `sender '${senderUsername}' wallet not found. please create a wallet first`,
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -114,7 +151,7 @@ export class WalletMutationProvider {
       });
       if (!receiverWallet) {
         throw new HttpException(
-          `receiver ${receiverUsername} wallet not found... please create a wallet`,
+          `receiver '${receiverUsername}' wallet not found. please create a wallet first`,
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -122,11 +159,10 @@ export class WalletMutationProvider {
       // convert to numbers and ensure proper decimal precision
       const senderBalance = parseFloat(String(senderWallet.balance || 0));
       const receiverBalance = parseFloat(String(receiverWallet.balance || 0));
-      const transferAmount = parseFloat(amount);
 
       if (senderBalance < transferAmount) {
         throw new HttpException(
-          `insufficient amount... current balance is ${senderBalance}`,
+          `insufficient balance. current balance: ${senderBalance}, required: ${transferAmount}`,
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -163,25 +199,46 @@ export class WalletMutationProvider {
           where: { id: senderWallet.id },
         });
 
+        this.logger.log('wallet transfer completed successfully', {
+          senderUsername,
+          receiverUsername,
+          amount: transferAmount,
+          senderPreviousBalance: senderBalance,
+          senderNewBalance: senderNewBalance,
+        });
+
         return {
-          message: `${amount} successfully transferred from ${senderUsername} to ${receiverUsername}`,
+          message: `${transferAmount} successfully transferred from ${senderUsername} to ${receiverUsername}`,
           senderWallet: updatedSenderWallet,
         };
       } catch (error) {
         await queryRunner.rollbackTransaction();
+        this.logger.error('transaction rollback - wallet transfer failed', {
+          error: error.message,
+          stack: error.stack,
+          senderUsername,
+          receiverUsername,
+          amount: transferAmount,
+        });
         throw error;
       } finally {
         await queryRunner.release();
       }
     } catch (error) {
-      this.logger.error({ error });
+      this.logger.error('error transferring funds between wallets', {
+        error: error.message,
+        stack: error.stack,
+        senderUsername: transferWalletDto.senderUsername,
+        receiverUsername: transferWalletDto.receiverUsername,
+        amount: transferWalletDto.amount,
+      });
 
       if (error instanceof HttpException) {
         throw error;
       }
 
       throw new HttpException(
-        `error transfer amount between wallet`,
+        'failed to transfer funds. please try again later',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

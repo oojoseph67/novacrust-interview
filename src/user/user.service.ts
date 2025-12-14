@@ -18,25 +18,23 @@ export class UserService {
   ) {}
 
   async create(createData: { email: string; username: string }): Promise<User> {
+    const { email, username } = createData;
     try {
-      const { email, username } = createData;
-
       if (!email) {
-        throw new HttpException(
-          'Please provide just an email or phone number',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('email is required', HttpStatus.BAD_REQUEST);
+      }
+
+      if (!username) {
+        throw new HttpException('username is required', HttpStatus.BAD_REQUEST);
       }
 
       // check for spam email before proceeding
-      if (email) {
-        if (SpamDetectionUtil.isSpamEmail(email)) {
-          this.logger.warn('spam email detected in user creation', { email });
-          throw new HttpException(
-            'invalid email address. please use a valid email address',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
+      if (SpamDetectionUtil.isSpamEmail(email)) {
+        this.logger.warn('spam email detected in user creation', { email });
+        throw new HttpException(
+          'invalid email address. please use a valid email address',
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       const existingUsername = await this.findUserByUsername(username);
@@ -63,14 +61,20 @@ export class UserService {
 
       return user;
     } catch (error) {
-      console.log({ error });
+      this.logger.error('error creating user', {
+        error: error.message,
+        stack: error.stack,
+        email,
+        username,
+      });
+
       if (error instanceof HttpException) {
         throw error;
       }
 
       throw new HttpException(
-        `Error creating user: ${error.message}`,
-        HttpStatus.BAD_GATEWAY,
+        'failed to create user. please try again later',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -86,16 +90,22 @@ export class UserService {
 
       return user;
     } catch (error) {
+      this.logger.error('error finding user by email', {
+        error: error.message,
+        stack: error.stack,
+        email,
+      });
+
       throw new HttpException(
-        `Error finding user using email: ${error.message}`,
-        HttpStatus.BAD_GATEWAY,
+        'failed to find user by email. please try again later',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   async findUserByUsername(username: string): Promise<User> {
     try {
-      // return null if email is null, undefined, or empty
+      // return null if username is null, undefined, or empty
       if (!username) {
         return null;
       }
@@ -104,9 +114,15 @@ export class UserService {
 
       return user;
     } catch (error) {
+      this.logger.error('error finding user by username', {
+        error: error.message,
+        stack: error.stack,
+        username,
+      });
+
       throw new HttpException(
-        `Error finding user using email: ${error.message}`,
-        HttpStatus.BAD_GATEWAY,
+        'failed to find user by username. please try again later',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -120,9 +136,15 @@ export class UserService {
 
       return user;
     } catch (error) {
+      this.logger.error('error finding user by id (raw)', {
+        error: error.message,
+        stack: error.stack,
+        id,
+      });
+
       throw new HttpException(
-        `Error finding user(raw) with id ${id}... : ${error.message}`,
-        HttpStatus.BAD_GATEWAY,
+        'failed to find user. please try again later',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -135,7 +157,7 @@ export class UserService {
 
       if (!user) {
         throw new HttpException(
-          `User with id ${id} not found`,
+          `user with id ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
@@ -145,9 +167,16 @@ export class UserService {
       if (error instanceof HttpException) {
         throw error;
       }
+
+      this.logger.error('error finding user by id', {
+        error: error.message,
+        stack: error.stack,
+        id,
+      });
+
       throw new HttpException(
-        `Error finding user with id ${id}... : ${error.message}`,
-        HttpStatus.BAD_GATEWAY,
+        'failed to find user. please try again later',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -160,8 +189,13 @@ export class UserService {
 
       return users;
     } catch (error) {
+      this.logger.error('error fetching all users', {
+        error: error.message,
+        stack: error.stack,
+      });
+
       throw new HttpException(
-        `Error fetching all users: ${error.message}`,
+        'failed to fetch users. please try again later',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

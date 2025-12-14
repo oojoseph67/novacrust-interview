@@ -53,14 +53,18 @@ export class WalletService {
         wallet: userWallet,
       };
     } catch (error) {
-      this.logger.error({ error });
+      this.logger.error('error creating wallet', {
+        error: error.message,
+        stack: error.stack,
+        username: createWalletDto.username,
+      });
 
       if (error instanceof HttpException) {
         throw error;
       }
 
       throw new HttpException(
-        `error creating wallet`,
+        'failed to create wallet. please try again later',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -91,14 +95,18 @@ export class WalletService {
 
       return { wallet: userWallet };
     } catch (error) {
-      this.logger.error({ error });
+      this.logger.error('error getting user wallet', {
+        error: error.message,
+        stack: error.stack,
+        username,
+      });
 
       if (error instanceof HttpException) {
         throw error;
       }
 
       throw new HttpException(
-        `error getting user wallet`,
+        'failed to retrieve wallet. please try again later',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
