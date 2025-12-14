@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export type Currency = 'USDT' | 'USDC' | 'NGN' | 'USD';
+export type Currency = 'USD';
 
 @Entity({ name: 'wallet' })
 export class Wallet {
