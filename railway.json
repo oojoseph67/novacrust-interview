@@ -1,0 +1,10 @@
+{
+    "$schema": "https://railway.com/railway.schema.json",
+    "build": {
+        "builder": "RAILPACK",
+        "buildCommand": "pnpm install --frozen-lockfile && node --max-old-space-size=4096 ./node_modules/@nestjs/cli/bin/nest.js build"
+    },
+    "deploy": {
+        "startCommand": "node dist/src/main"
+    }
+}
