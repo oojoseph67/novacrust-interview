@@ -1,11 +1,2 @@
-import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsString } from 'class-validator';
-
-export class CreateWalletDto {
-  @IsNotEmpty()
-  @IsString()
-  @Transform(({ obj }: { obj: { username: string } }) =>
-    obj.username.toLowerCase(),
-  )
-  username: string;
-}
+export * from './create-wallet.dto';
+export * from './fund-wallet.dto';

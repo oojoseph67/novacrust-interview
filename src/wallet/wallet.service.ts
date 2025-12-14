@@ -4,6 +4,7 @@ import { Wallet } from './entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateWalletDto } from './dto';
 import { UserService } from 'src/user/user.service';
+import { WalletMutationProvider } from './providers';
 
 @Injectable()
 export class WalletService {
@@ -14,6 +15,7 @@ export class WalletService {
     private walletRepository: Repository<Wallet>,
 
     private userService: UserService,
+    private walletMutationProvider: WalletMutationProvider,
   ) {}
 
   async createWallet(createWalletDto: CreateWalletDto) {
@@ -48,7 +50,7 @@ export class WalletService {
 
       return {
         message: `wallet created successfully`,
-        userWallet,
+        wallet: userWallet,
       };
     } catch (error) {
       this.logger.error({ error });
@@ -87,7 +89,7 @@ export class WalletService {
         );
       }
 
-      return userWallet;
+      return { wallet: userWallet };
     } catch (error) {
       this.logger.error({ error });
 
