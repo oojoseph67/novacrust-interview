@@ -1,8 +1,8 @@
 {
-    "$schema": "https://railway.com/railway.schema.json",
+    "$schema": "https://railway.app/railway.schema.json",
     "build": {
         "builder": "NIXPACKS",
-        "buildCommand": "pnpm install --frozen-lockfile && pnpm run build"
+        "buildCommand": "corepack enable pnpm && corepack prepare pnpm@latest --activate && pnpm install && pnpm build"
     },
     "deploy": {
         "startCommand": "pnpm start:prod",
