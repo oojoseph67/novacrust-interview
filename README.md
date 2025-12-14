@@ -79,7 +79,7 @@ DATABASE_SYNC=false
 ### Step 1: Access Swagger Documentation
 
 Navigate to the Swagger documentation at:
-- **Production**: `https://your-production-url.com/api/docs`
+- **Production**: `https://novacrust-interview-production.up.railway.app/api/docs`
 - **Local Development**: `http://localhost:8888/api/docs`
 
 ### Step 2: Create a User Account

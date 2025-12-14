@@ -35,7 +35,10 @@ async function bootstrap() {
     .setDescription('comprehensive api documentation for novacrust')
     .setVersion('1.0')
     .addServer('http://localhost:8888', 'localhost')
-    .addServer('', 'staging-server')
+    .addServer(
+      'https://novacrust-interview-production.up.railway.app',
+      'live-server',
+    )
     .addTag('user', 'user management endpoints')
     .addTag('wallet', 'wallet management endpoints')
     .build();
