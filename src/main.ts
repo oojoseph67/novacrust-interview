@@ -34,11 +34,11 @@ async function bootstrap() {
     .setTitle('Novacrust Interview')
     .setDescription('comprehensive api documentation for novacrust')
     .setVersion('1.0')
-    .addServer('http://localhost:8888', 'localhost')
     .addServer(
       'https://novacrust-interview-production.up.railway.app',
       'live-server',
     )
+    .addServer('http://localhost:8888', 'localhost')
     .addTag('user', 'user management endpoints')
     .addTag('wallet', 'wallet management endpoints')
     .build();

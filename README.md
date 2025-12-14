@@ -74,13 +74,49 @@ DATABASE_NAME=your_database_name
 DATABASE_SYNC=false
 ```
 
+## API Testing
+
+### Recommended: Swagger UI
+
+**We recommend using Swagger UI** for testing the API as it provides an interactive interface with full documentation, request/response schemas, and the ability to test endpoints directly in your browser.
+
+Access Swagger documentation at:
+- **Production**: `https://novacrust-interview-production.up.railway.app/api/docs`
+- **Local Development**: `http://localhost:8888/api/docs`
+
+Swagger UI features:
+- Interactive API testing without additional tools
+- Complete request/response schemas
+- Built-in validation and error messages
+- Try-it-out functionality for all endpoints
+- Real-time API documentation
+
+### Alternative: Postman Collection
+
+A Postman collection is also available for those who prefer using Postman for API testing.
+
+**Files included:**
+- `Novacrust-Interview.postman_collection.json` - Complete API collection
+- `Novacrust-Interview.postman_environment.json` - Local development environment
+- `Novacrust-Interview-Production.postman_environment.json` - Production environment
+
+**To use the Postman collection:**
+1. Import the collection file into Postman
+2. Import the environment file (choose local or production)
+3. Select the appropriate environment from the dropdown
+4. Start testing endpoints with pre-configured requests
+
+**Note:** While Postman is available, we strongly recommend using Swagger UI for the best experience with this API.
+
 ## How to Use the Application
 
 ### Step 1: Access Swagger Documentation
 
-Navigate to the Swagger documentation at:
-- **Production**: `https://novacrust-interview-production.up.railway.app/api/docs`
-- **Local Development**: `http://localhost:8888/api/docs`
+Navigate to the Swagger documentation (recommended) or use the Postman collection:
+- **Swagger (Recommended)**: 
+  - Production: `https://novacrust-interview-production.up.railway.app/api/docs`
+  - Local: `http://localhost:8888/api/docs`
+- **Postman**: Import `Novacrust-Interview.postman_collection.json`
 
 ### Step 2: Create a User Account
 
