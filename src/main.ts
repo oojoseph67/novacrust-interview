@@ -36,6 +36,8 @@ async function bootstrap() {
     .setVersion('1.0')
     .addServer('http://localhost:8888', 'localhost')
     .addServer('', 'staging-server')
+    .addTag('user', 'user management endpoints')
+    .addTag('wallet', 'wallet management endpoints')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -55,7 +57,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const port = process.env.PORT || 1111;
+  const port = process.env.PORT || 8888;
   await app.listen(port);
 
   logger.log(

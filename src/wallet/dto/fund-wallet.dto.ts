@@ -14,6 +14,10 @@ export class FundWalletDto {
   })
   amount: string;
 
+  @ApiProperty({
+    description: 'username of the user to fund wallet for',
+    example: 'johndoe',
+  })
   @IsNotEmpty()
   @IsString()
   @Transform(({ obj }: { obj: { username: string } }) =>

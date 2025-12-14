@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export default Joi.object({
-  PORT: Joi.number().default(1122),
+  PORT: Joi.number().default(8888),
   HOST: Joi.string().default('0.0.0.0'),
 
   NODE_ENV: Joi.string()

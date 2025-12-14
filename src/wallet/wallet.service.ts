@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Wallet } from './entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateWalletDto } from './dto';
+import { CreateWalletDto, FundWalletDto, TransferWalletDto } from './dto';
 import { UserService } from 'src/user/user.service';
 import { WalletMutationProvider } from './providers';
 
@@ -102,5 +102,15 @@ export class WalletService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async fundWallet(fundWalletDto: FundWalletDto) {
+    return await this.walletMutationProvider.fundWallet(fundWalletDto);
+  }
+
+  async transferBetweenWallet(transferWalletDto: TransferWalletDto) {
+    return await this.walletMutationProvider.transferBetweenWallet(
+      transferWalletDto,
+    );
   }
 }

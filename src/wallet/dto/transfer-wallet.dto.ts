@@ -3,6 +3,10 @@ import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumberString, IsString, Matches } from 'class-validator';
 
 export class TransferWalletDto {
+  @ApiProperty({
+    description: 'username of the sender',
+    example: 'johndoe',
+  })
   @IsNotEmpty()
   @IsString()
   @Transform(({ obj }: { obj: { username: string } }) =>
@@ -10,6 +14,10 @@ export class TransferWalletDto {
   )
   senderUsername: string;
 
+  @ApiProperty({
+    description: 'username of the receiver',
+    example: 'janedoe',
+  })
   @IsNotEmpty()
   @IsString()
   @Transform(({ obj }: { obj: { username: string } }) =>
