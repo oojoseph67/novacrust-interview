@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs", "pnpm"]
+
+[phases.install]
+cmds = ["pnpm install --frozen-lockfile"]
+
+[phases.build]
+cmds = ["node --max-old-space-size=4096 ./node_modules/@nestjs/cli/bin/nest.js build"]
+
+[start]
+cmd = "node dist/src/main"
