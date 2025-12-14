@@ -7,6 +7,7 @@ import environmentValidation from './global/config/environmentValidation';
 import databaseConfig from './global/config/database.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
   imports: [
@@ -49,6 +50,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         logging: ['error', 'warn'], // Reduced logging in production
       }),
     }),
+
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [AppService],

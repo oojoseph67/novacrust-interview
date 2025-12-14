@@ -4,6 +4,7 @@ import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import * as compression from 'compression';
 
 async function bootstrap() {
   const logger = new Logger('NovaCrust-Interview');
@@ -65,6 +66,3 @@ async function bootstrap() {
   );
 }
 bootstrap();
-function compression(): any {
-  throw new Error('Function not implemented.');
-}

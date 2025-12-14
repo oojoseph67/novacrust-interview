@@ -4,6 +4,10 @@ export default Joi.object({
   PORT: Joi.number().default(1122),
   HOST: Joi.string().default('0.0.0.0'),
 
+  NODE_ENV: Joi.string()
+    .valid('production', 'development', 'test', 'staging')
+    .default('development'),
+
   DATABASE_HOST: Joi.string().required(),
   DATABASE_PORT: Joi.number().port().default(5432),
   DATABASE_USERNAME: Joi.string().required(),
