@@ -2,5 +2,5 @@
 builder = "NIXPACKS"
 
 [deploy]
-buildCommand = "npm install && npm run build"
-startCommand = "node dist/src/main"
+buildCommand = "pnpm install --frozen-lockfile && pnpm run build"
+startCommand = "pnpm start:prod"
